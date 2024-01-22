@@ -1,9 +1,8 @@
-package v0;
+package v19;
 
 
 import java.util.HashSet;
 import battlecode.common.*;
-
 
 class Message {
     public int idx;
@@ -215,21 +214,11 @@ class Communication {
 		return -1;
 	}
 
-    static MapLocation getClosestWell(RobotController rc, ResourceType resourceType) {
-        int start;
-        switch (resourceType) {
-            case ADAMANTIUM_WELL:
-                start = ADA_WELL_IDX; // Specific index for Adamantium wells
-                break;
-            case MANA_WELL:
-                start = MANA_WELL_IDX; // Specific index for Mana wells
-                break;
-            // Add cases for other resource types if necessary
-            default:
-                start = MANA_WELL_IDX; // Default case, you can change this as needed
-                break;
-        }
-
+	static MapLocation getClosestWell(RobotController rc, ResourceType resource) {
+		int start = MANA_WELL_IDX;
+		if (resource == ResourceType.ADAMANTIUM) {
+			start = ADA_WELL_IDX;
+		}
         MapLocation answer = null;
         for (int i = start; i < start + N_SAVED_WELLS; i++) {
             final int value;
@@ -245,7 +234,6 @@ class Communication {
         }
         return answer;
     }
-
 
     static MapLocation getClosestUnbannedWell(RobotController rc, ResourceType resource) throws GameActionException {
 		int start = MANA_WELL_IDX;

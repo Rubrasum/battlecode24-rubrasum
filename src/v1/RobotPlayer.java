@@ -1,4 +1,4 @@
-package examplefuncsplayer;
+package v1;
 
 import battlecode.common.*;
 
@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.List;
 
 /**
  * RobotPlayer is the class that describes your main robot strategy.
@@ -133,12 +134,17 @@ public strictfp class RobotPlayer {
             }
         }
     }
+	
+	static int getTotalResources(RobotController rc) throws GameActionException {
+		return rc.getResourceAmount(ResourceType.ADAMANTIUM) + rc.getResourceAmount(ResourceType.MANA) + rc.getResourceAmount(ResourceType.ELIXIR);
+	}
 
     /**
      * Run a single turn for a Carrier.
      * This code is wrapped inside the infinite loop in run(), so it is called once per turn.
      */
     static void runCarrier(RobotController rc) throws GameActionException {
+        Team opponent = rc.getTeam().opponent();
         if (rc.getAnchor() != null) {
             // If I have an anchor singularly focus on getting it to the first island I see
             int[] islands = rc.senseNearbyIslands();
@@ -164,35 +170,59 @@ public strictfp class RobotPlayer {
         }
         // Try to gather from squares around us.
         MapLocation me = rc.getLocation();
+		boolean foundWell = false;
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 MapLocation wellLocation = new MapLocation(me.x + dx, me.y + dy);
                 if (rc.canCollectResource(wellLocation, -1)) {
-                    if (rng.nextBoolean()) {
-                        rc.collectResource(wellLocation, -1);
-                        rc.setIndicatorString("Collecting, now have, AD:" + 
-                            rc.getResourceAmount(ResourceType.ADAMANTIUM) + 
-                            " MN: " + rc.getResourceAmount(ResourceType.MANA) + 
-                            " EX: " + rc.getResourceAmount(ResourceType.ELIXIR));
+                    rc.collectResource(wellLocation, -1);
+                    rc.setIndicatorString("Collecting, now have, AD:" + 
+                        rc.getResourceAmount(ResourceType.ADAMANTIUM) + 
+                        " MN: " + rc.getResourceAmount(ResourceType.MANA) + 
+                        " EX: " + rc.getResourceAmount(ResourceType.ELIXIR));
+					foundWell = true;
+                }
+            }
+        }
+		// If at a well, keep collecting until full.
+		if (foundWell && getTotalResources(rc) < 40) {
+			return;
+		}
+
+		if (getTotalResources(rc) == 40) {
+            RobotInfo[] hqs = Arrays.stream(rc.senseNearbyRobots()).filter(robot -> robot.type == RobotType.HEADQUARTERS && robot.team != opponent).toArray(RobotInfo[]::new);
+            int min_dist = 7200;
+            if (hqs.length >= 1) {
+                RobotInfo closest_hq = hqs[0];
+                for (RobotInfo hq: hqs) {
+                    int dist = hq.location.distanceSquaredTo(me);
+                    if (dist < min_dist) {
+                        min_dist = dist;
+                        closest_hq = hq;
                     }
+                }
+                Direction dir = me.directionTo(closest_hq.location);
+                if (rc.canMove(dir)) {
+                    rc.move(dir);
                 }
             }
         }
         // Occasionally try out the carriers attack
-        if (rng.nextInt(20) == 1) {
-            RobotInfo[] enemyRobots = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
-            if (enemyRobots.length > 0) {
-                if (rc.canAttack(enemyRobots[0].location)) {
-                    rc.attack(enemyRobots[0].location);
-                }
-            }
-        }
-        
+        // if (rng.nextInt(20) == 1) {
+        //     RobotInfo[] enemyRobots = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
+        //     if (enemyRobots.length > 0) {
+        //         if (rc.canAttack(enemyRobots[0].location)) {
+		// 			int before = getTotalResources(rc);
+        //             rc.attack(enemyRobots[0].location);
+		// 			rc.setIndicatorString("Attacking! before: " + before + " after: " + getTotalResources(rc));
+        //         }
+        //     }
+        // }
+       	
         // If we can see a well, move towards it
         WellInfo[] wells = rc.senseNearbyWells();
-        if (wells.length > 1 && rng.nextInt(3) == 1) {
-            WellInfo well_one = wells[1];
-            Direction dir = me.directionTo(well_one.getMapLocation());
+        if (wells.length >= 1 && rng.nextInt(3) == 1) {
+            Direction dir = me.directionTo(wells[0].getMapLocation());
             if (rc.canMove(dir)) 
                 rc.move(dir);
         }
@@ -212,15 +242,17 @@ public strictfp class RobotPlayer {
         int radius = rc.getType().actionRadiusSquared;
         Team opponent = rc.getTeam().opponent();
         RobotInfo[] enemies = rc.senseNearbyRobots(radius, opponent);
-        if (enemies.length >= 0) {
-            // MapLocation toAttack = enemies[0].location;
-            MapLocation toAttack = rc.getLocation().add(Direction.EAST);
+        if (enemies.length > 0) {
+            MapLocation toAttack = enemies[0].location;
+            //MapLocation toAttack = rc.getLocation().add(Direction.EAST);
 
             if (rc.canAttack(toAttack)) {
                 rc.setIndicatorString("Attacking");        
                 rc.attack(toAttack);
             }
         }
+
+        //TODO: ATTACK ENEMY HEADQUARTERS!!!!!!!!!!!!!!!!
 
         // Also try to move randomly.
         Direction dir = directions[rng.nextInt(directions.length)];
