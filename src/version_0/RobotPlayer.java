@@ -17,6 +17,9 @@ public strictfp class RobotPlayer {
      * these variables are static, in Battlecode they aren't actually shared between your robots.
      */
     static int turnCount = 0;
+    static int botType = 0;
+    static int thinkerLevel = 0;
+
 
     /**
      * A random number generator.
@@ -60,22 +63,51 @@ public strictfp class RobotPlayer {
             // loop. If we ever leave this loop and return from run(), the robot dies! At the end of the
             // loop, we call Clock.yield(), signifying that we've done everything we want to do.
 
+            // First check for type
+            // if no BigThinker, this is BigThinker
+            if (turnCount == 0 ) {
+                int control_0_state = rc.readSharedArray(0);
+                if (control_0_state == 0) {
+                    botType = 0; // Big Thinker
+                    rc.writeSharedArray(0,1);
+                }
+                else if (control_0_state < 3) {
+                    botType = 1; // BUILDER
+                    rc.writeSharedArray(0,control_0_state + 1);
+                }
+                else{
+                    botType = 2; // DRONE
+                    rc.writeSharedArray(0,control_0_state+1);
+                }
+            }
+
+
+
             turnCount += 1;  // We have now been alive for one more turn!
 
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode.
             try {
                 // Make sure you spawn your robot in before you attempt to take any actions!
                 // Robots not spawned in do not have vision of any tiles and cannot perform any actions.
+                // Ensure the robot is spawned before taking any actions
                 if (!rc.isSpawned()) {
                     MapLocation[] spawnLocs = rc.getAllySpawnLocations();
-                    // Loop through the spawn locations and find the first available.
-                    for (MapLocation spawnLoc : spawnLocs) {
-                        if (rc.canSpawn(spawnLoc)) {
-                            rc.spawn(spawnLoc);
-                            break; // Exit the loop once a valid location is found
+                    // Read the shared array to get the starting index for spawn locations
+                    int spawnLocIndex = rc.readSharedArray(1) % spawnLocs.length;
+
+                    // Iterate over all spawn locations starting from the index
+                    for (int i = 0; i < spawnLocs.length; i++) {
+                        int currentIndex = (spawnLocIndex + i) % spawnLocs.length;
+                        if (rc.canSpawn(spawnLocs[currentIndex])) {
+                            rc.spawn(spawnLocs[currentIndex]);
+                            rc.writeSharedArray(1, currentIndex + 1);
+                            break; // Exit once a valid location is found
                         }
                     }
+
+                    // Optionally add logic here if no valid spawn location is found
                 }
+
                 else{
                     if (rc.canPickupFlag(rc.getLocation())){
                         rc.pickupFlag(rc.getLocation());
