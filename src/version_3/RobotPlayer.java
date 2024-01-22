@@ -21,6 +21,7 @@ public strictfp class RobotPlayer {
     static int Disdirection = 0;
 
 
+
     /**
      * A random number generator.
      * We will use this RNG to make some random moves. The Random class is provided by the java.util.Random
@@ -232,13 +233,16 @@ public strictfp class RobotPlayer {
                         // Update the direct
                         Disdirection = dir_to_enem.ordinal();
                     }
-                    // This is the very front
-                    MapInfo nextLocMapInfo = rc.senseMapInfo(og_next_loc);
-                    if (nextLocMapInfo.isWater()) {
-                        if (rc.canFill(og_next_loc)) {
-                            rc.fill(og_next_loc);
+                    // Check that this location exists on the map
+                    if (rc.onTheMap(og_next_loc)) {
+                        MapInfo nextLocMapInfo = rc.senseMapInfo(og_next_loc);
+                        if (nextLocMapInfo.isWater()) {
+                            if (rc.canFill(og_next_loc)) {
+                                rc.fill(og_next_loc);
+                            }
                         }
                     }
+
                     
                     if (rc.canMove(dir)){
                         rc.move(dir);
