@@ -471,8 +471,8 @@ public strictfp class RobotPlayer {
 
 			// Move towards the goal along the start-goal line.
 			// If a wall is encountered:
-			// Remember the location where the wall was first encountered. This is the “hit point.”
-			// Follow the wall until you encounter the start-goal line. This point is known as the “leave point.”
+			// Remember the location where the wall was first encountered. This is the "hit point."
+			// Follow the wall until you encounter the start-goal line. This point is known as the "leave point."
 			//  If the leave point is closer to the goal than the hit point, leave the wall, and move towards the goal again.
 			// Otherwise, continue following the wall.
 			// 3.      When the goal is reached, stop.

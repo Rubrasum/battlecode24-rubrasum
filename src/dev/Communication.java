@@ -16,6 +16,7 @@ class Message {
     }
 }
 
+
 class Communication {
 
     private static final int OUTDATED_TURNS_AMOUNT = 30;
@@ -292,11 +293,18 @@ class Communication {
 		return -1;
 	}
 
-	static MapLocation getClosestWell(RobotController rc, ResourceType resource) {
-		int start = MANA_WELL_IDX;
-		if (resource == ResourceType.ADAMANTIUM) {
-			start = ADA_WELL_IDX;
-		}
+    static MapLocation getClosestWell(RobotController rc, ResourceType resource) {
+        int start;
+        switch (resource) {
+            case ADAMANTIUM:
+                start = ADA_WELL_IDX; // Specific index for Adamantium wells
+                break;
+            case MANA:
+            default:
+                start = MANA_WELL_IDX; // Default index for Mana wells
+                break;
+        }
+
         MapLocation answer = null;
         for (int i = start; i < start + N_SAVED_WELLS; i++) {
             final int value;
