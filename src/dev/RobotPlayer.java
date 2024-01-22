@@ -125,16 +125,16 @@ public strictfp class RobotPlayer {
 		myTeam = rc.getTeam();
 		enemyTeam = myTeam.opponent();
 		
-		if (rc.getType() == RobotType.HEADQUARTERS) {
-			Communication.addHeadquarter(rc);
-			HQLOC = rc.getLocation();
-			Communication.tryWriteMessages(rc);
-			RunHeadquarters.setup(rc);
-			Communication.updateHeadquarterInfo(rc);
-		} else {
-			Communication.updateHeadquarterInfo(rc);
-            HQLOC = Communication.getClosestHeadquarters(rc);
-		}
+//		if (rc.getType() == RobotType.HEADQUARTERS) {
+//			Communication.addHeadquarter(rc);
+//			HQLOC = rc.getLocation();
+//			Communication.tryWriteMessages(rc);
+//			RunHeadquarters.setup(rc);
+//			Communication.updateHeadquarterInfo(rc);
+//		} else {
+		Communication.updateHeadquarterInfo(rc);
+		HQLOC = Communication.getClosestHeadquarters(rc);
+//		}
 
 
 		
@@ -150,26 +150,28 @@ public strictfp class RobotPlayer {
                 // different types. Here, we separate the control depending on the RobotType, so we can
                 // use different strategies on different robots. If you wish, you are free to rewrite
                 // this into a different control structure!
-                switch (rc.getType()) {
-					case HEADQUARTERS:     RunHeadquarters.runHeadquarters(rc);  break;
-					case CARRIER:      RunCarrier.runCarrier(rc);   break;
-					case LAUNCHER: RunLauncher.runLauncher(rc); break;
-					case BOOSTER: // Examplefuncsplayer doesn't use any of these robot types below.
-					case DESTABILIZER: // You might want to give them a try!
-					case AMPLIFIER:       RunAmplifier.runAmplifier(rc); break;
-				}
+//                switch (rc.getType()) {
+//					case HEADQUARTERS:     RunHeadquarters.runHeadquarters(rc);  break;
+//					case CARRIER:      RunCarrier.runCarrier(rc);   break;
+//					case LAUNCHER: RunLauncher.runLauncher(rc); break;
+//					case BOOSTER: // Examplefuncsplayer doesn't use any of these robot types below.
+//					case DESTABILIZER: // You might want to give them a try!
+//					case AMPLIFIER:       RunAmplifier.runAmplifier(rc); break;
+//				}
+
+				RunCarrier.runCarrier(rc);   break;
 
 			} catch (GameActionException e) {
 				// Oh no! It looks like we did something illegal in the Battlecode world. You should
 				// handle GameActionExceptions judiciously, in case unexpected events occur in the game
 				// world. Remember, uncaught exceptions cause your robot to explode!
-				System.out.println(rc.getType() + " Exception");
+				System.out.println("ID: " + rc.getID() + " Exception");
 				e.printStackTrace();
 				
 			} catch (Exception e) {
 				// Oh no! It looks like our code tried to do something bad. This isn't a
 				// GameActionException, so it's more likely to be a bug in our code.
-				System.out.println(rc.getType() + " Exception");
+				System.out.println("ID: " + rc.getID() + " Exception");
 				e.printStackTrace();
 
 			} finally {
@@ -188,14 +190,14 @@ public strictfp class RobotPlayer {
 			if (lastLocation == null || !lastLocation.equals(rc.getLocation())) {
 				lastLocation = rc.getLocation();
 				mapInfos = rc.senseNearbyMapInfos(); // 200 bytecode
-				nearbyWells = rc.senseNearbyWells(); // 100 bytecode
+//				nearbyWells = rc.senseNearbyWells(); // 100 bytecode
 			}
 			else{
 				mapInfos = null;
 				nearbyWells = null;
 			}
 			robotInfos = rc.senseNearbyRobots();
-			islands = rc.senseNearbyIslands(); // 200 bytecode
+//			islands = rc.senseNearbyIslands(); // 200 bytecode
 
 			int length = mapInfos == null ? 0 : mapInfos.length;
 			for (int i = length; --i >= 0;) {
@@ -281,7 +283,8 @@ public strictfp class RobotPlayer {
 						arrayLoc = Communication.readAdaWellLocation(rc, HQLOC);
 						if (arrayLoc == null || loc.distanceSquaredTo(HQLOC) < arrayLoc.distanceSquaredTo(HQLOC))
 							Communication.updateAdaWellLocation(rc, loc, HQLOC);
-						if (rc.getType() == RobotType.CARRIER && (wellLoc == null || loc.distanceSquaredTo(HQLOC) < wellLoc.distanceSquaredTo(HQLOC))) {
+//						if (rc.getType() == RobotType.CARRIER && (wellLoc == null || loc.distanceSquaredTo(HQLOC) < wellLoc.distanceSquaredTo(HQLOC))) {
+						if ((wellLoc == null || loc.distanceSquaredTo(HQLOC) < wellLoc.distanceSquaredTo(HQLOC))) {
                             if (!RunCarrier.onBanList(loc))
 							    if (RunCarrier.earlyAda || (rc.getID() % RunCarrier.CARRIER_DIFF_MOD == 0 && !RunCarrier.earlyMana))
 							    	wellLoc = loc;

@@ -2,7 +2,8 @@ package dev;
 
 public enum RobotType {
     // Define CARRIER with the vision radius squared property
-    CARRIER(100, 10); // Replace 100 with the build cost or another property and 10 with the actual vision radius squared value
+    CARRIER(100, 10), // Replace 100 with the build cost or another property and 10 with the actual vision radius squared value
+    HEADQUARTERS(100, 10); // Replace 100 with the build cost or another property and 10 with the actual vision radius squared value
 
     private final int someProperty; // Replace 'someProperty' with a meaningful name
     private final int visionRadiusSquared;

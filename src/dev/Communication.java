@@ -20,7 +20,7 @@ class Message {
 class Communication {
 
     private static final int OUTDATED_TURNS_AMOUNT = 30;
-    private static final int AREA_RADIUS = RobotType.CARRIER.visionRadiusSquared;
+    private static final int AREA_RADIUS = RobotType.CARRIER.getVisionRadiusSquared();
 	private static final int N_SAVED_WELLS = GameConstants.MAX_STARTING_HEADQUARTERS;
 
     // Maybe you want to change this based on exact amounts which you can get on turn 1
@@ -237,7 +237,17 @@ class Communication {
         }
         int idx = id + STARTING_ISLAND_IDX - 1;
         int oldIslandValue = rc.readSharedArray(idx);
-        Team teamHolding = rc.senseTeamOccupyingIsland(id);
+
+        // New approach: Sense nearby robots and determine team
+        Team teamHolding = Team.NEUTRAL; // Default to NEUTRAL
+        RobotInfo[] robots = rc.senseNearbyRobots(); // Sense nearby robots
+        for (RobotInfo robot : robots) {
+            if (false) { // TODO FIX THIS
+                teamHolding = robot.team;
+                break;
+            }
+        }
+
         if (oldIslandValue == 0 || ((oldIslandValue & TEAM_MASK) != teamHolding.ordinal())) {
             MapLocation closestIslandLoc = null;
             int closestDistance = -1;
@@ -248,8 +258,6 @@ class Communication {
                     closestIslandLoc = loc;
                 }
             }
-            // Remember reading is cheaper than writing so we don't want to write without knowing if it's helpful
-            
             int updatedIslandValue = bitPackIslandInfo(rc, idx, closestIslandLoc);
             if (oldIslandValue != updatedIslandValue) {
                 Message msg = new Message(idx, updatedIslandValue, RobotPlayer.turnCount);
@@ -258,11 +266,12 @@ class Communication {
         }
     }
 
+
     static int bitPackIslandInfo(RobotController rc, int islandIdx, MapLocation closestLoc) throws GameActionException {
         int islandInt = locationToInt(rc, closestLoc);
         islandInt = islandInt << (TOTAL_BITS - MAPLOC_BITS);
-        Team teamHolding = rc.senseTeamOccupyingIsland(islandIdx + 1 - STARTING_ISLAND_IDX); // idx in shared array
-        islandInt += teamHolding.ordinal();
+//        Team teamHolding = rc.senseTeamOccupyingIsland(islandIdx + 1 - STARTING_ISLAND_IDX); // idx in shared array
+//        islandInt += teamHolding.ordinal();
         return islandInt;
     }
 
