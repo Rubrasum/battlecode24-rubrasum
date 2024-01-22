@@ -3,6 +3,7 @@ package v19;
 import battlecode.common.*;
 
 import static v19.Communication.*;
+import dev.RobotType; // Covers for something that existed in old verison
 
 import java.util.Random;
 

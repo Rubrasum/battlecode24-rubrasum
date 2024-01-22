@@ -67,6 +67,28 @@ public strictfp class RobotPlayer {
 	static MapInfo[] mapInfos; // rc.senseNearbyMapInfos();
 	static RobotInfo[] robotInfos; // rc.senseNearbyRobots();
 	static int[] islands; // rc.senseNearbyIslands();
+
+	public static class WellInfo {
+		private MapLocation location;
+		// Other properties, like type of well, amount of resource, etc.
+
+		public WellInfo(MapLocation location) {
+			this.location = location;
+			// Initialize other properties
+		}
+
+		// Getters and setters
+		public MapLocation getLocation() {
+			return location;
+		}
+
+		public void setLocation(MapLocation location) {
+			this.location = location;
+		}
+
+		// Other getters and setters
+	}
+
 	static WellInfo[] nearbyWells; // rc.senseNearbyWells();
 	static MapLocation lastLocation = null;
 	

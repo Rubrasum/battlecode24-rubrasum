@@ -8,6 +8,8 @@ import java.util.HashSet;
 
 import battlecode.common.*;
 
+import dev.ResourceType; // Covers for something that existed in old verison
+
 class Message {
     public int idx;
     public int value;

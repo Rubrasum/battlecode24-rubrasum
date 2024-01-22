@@ -3,8 +3,11 @@ package v0;
 
 import battlecode.common.*;
 import java.util.Arrays;
+import dev.RobotType; // Covers for missing old thing that existed in old version maybe
 
 import static v19.RobotPlayer.*;
+
+
 
 public strictfp class RunHeadquarters {
 

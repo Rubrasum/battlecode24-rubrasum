@@ -3,6 +3,7 @@ package v19;
 
 import java.util.HashSet;
 import battlecode.common.*;
+import dev.ResourceType;
 
 class Message {
     public int idx;

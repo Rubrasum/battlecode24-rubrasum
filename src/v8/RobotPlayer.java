@@ -10,6 +10,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import static dev.RobotPlayer.*;
+import dev.RobotType; // Covers for something that existed in old verison
+import dev.ResourceType; // Covers for something that existed in old verison
 
 /**
  * RobotPlayer is the class that describes your main robot strategy.

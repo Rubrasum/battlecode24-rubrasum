@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 
+import static dev.RobotPlayer.*;
+import dev.RobotType; // Covers for something that existed in old verison
+import dev.ResourceType; // Covers for something that existed in old verison
 /**
  * RobotPlayer is the class that describes your main robot strategy.
  * The run() method inside this class is like your main function: this is what we'll call once your robot

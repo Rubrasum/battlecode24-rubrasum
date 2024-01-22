@@ -5,6 +5,7 @@ import battlecode.common.*;
 import java.util.Arrays;
 
 import static v10.RobotPlayer.*;
+import dev.RobotType; // Covers for something that existed in old verison
 
 public strictfp class RunHeadquarters {
 

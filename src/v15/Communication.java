@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import battlecode.common.*;
+import static dev.RobotPlayer.*;
+import dev.RobotType; // Covers for something that existed in old verison
+import dev.ResourceType; // Covers for something that existed in old verison
 
 class Message {
     public int idx;

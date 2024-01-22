@@ -6,6 +6,9 @@ import java.util.Arrays;
 
 import static v18.RobotPlayer.*;
 
+import static dev.RobotPlayer.*;
+import dev.RobotType; // Covers for something that existed in old verison
+
 public strictfp class RunHeadquarters {
 
 	static final int LAUNCHER_MOD = 10;
