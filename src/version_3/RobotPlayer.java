@@ -233,14 +233,35 @@ public strictfp class RobotPlayer {
                         // Update the direct
                         Disdirection = dir_to_enem.ordinal();
                     }
+                    if (turnCount % 15 == 0) {
+                        // Sense for friends
+                        RobotInfo[] friendRobots = rc.senseNearbyRobots(-1, rc.getTeam());
+                        // if you find one friendly robot, change direction to point away from it
+                        if (friendRobots.length > 0) {
+                            MapLocation friend_loc = friendRobots[0].getLocation();
+                            // get current location
+                            MapLocation cur_loc = rc.getLocation();
+                            // get direction to enemy
+                            Direction dir_to_friend = cur_loc.directionTo(friend_loc);
+                            // Update the direct
+                            Disdirection = (dir_to_friend.ordinal() + 4) % 8;
+                        }
+                    }
+
+
+
                     // Check that this location exists on the map
                     if (rc.onTheMap(og_next_loc)) {
                         MapInfo nextLocMapInfo = rc.senseMapInfo(og_next_loc);
-                        if (nextLocMapInfo.isWater()) {
+                        if (nextLocMapInfo.isWater() && nextLocMapInfo.getTeamTerritory() != rc.getTeam()) {
                             if (rc.canFill(og_next_loc)) {
                                 rc.fill(og_next_loc);
                             }
                         }
+                    }
+                    // check if can buy damage upgrade
+                    if (rc.canBuyGlobal(GlobalUpgrade.ATTACK)) {
+                        rc.buyGlobal(GlobalUpgrade.ATTACK);
                     }
 
                     
